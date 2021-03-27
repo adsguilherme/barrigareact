@@ -1,10 +1,16 @@
 /// <reference types="cypress" />
 
+import '../../support/commandsAPI'
 
 describe('Deve testar o nível funcional', () => {
+    
+    let token
+    
     before(() => {
-        //cy.login()
-       
+        cy.getToken()
+            .then(tkn => {
+                token = tkn
+            })    
     })
         
     beforeEach(() => {
@@ -12,25 +18,29 @@ describe('Deve testar o nível funcional', () => {
     })
 
     it('Deve inserir uma conta', () => {
-         cy.request({
-             method: 'POST',
-             url: 'https://barrigarest.wcaquino.me/signin',
-             body: {
-                "email":"gscode@gscode.com.br",
-                "senha":"123",
-                "redirecionar":false
-             }
-         }).its('body.token').should('not.be.empty')         // .then(res => console.log(res));
-         .then(token => {
+        //  cy.request({
+        //      method: 'POST',
+        //      url: 'https://barrigarest.wcaquino.me/signin',
+        //      body: {
+        //         "email":"gscode@gscode.com.br",
+        //         "senha":"123",
+        //         "redirecionar":false
+        //      }
+        //  }).its('body.token').should('not.be.empty')         // .then(res => console.log(res));
+         
+        cy.request({
+                method: 'POST',
+                url: 'http://barrigarest.wcaquino.me/contas',
+                headers: { Authorization: `JWT ${token}`},
+                body: {
+                    "nome": "Conta via API"
+            }
+        }).as('response')                                 // .then(res => console.log(res));
 
-            cy.request({
-                 method: 'POST',
-                 url: 'http://barrigarest.wcaquino.me/contas',
-                 headers: { Authorization: `JWT ${token}`},
-                 body: {
-                     "nome": "Conta via API"
-                }
-            }).then(res => console.log(res));
+        cy.get('@response').then(res => {
+            expect(res.status).to.be.eq(201)
+            expect(res.body).to.have.property('id')
+            expect(res.body).to.have.property('nome', 'Conta via API')
         })
 
     })
