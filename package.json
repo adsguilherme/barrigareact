@@ -1,0 +1,21 @@
+{
+  "name": "application",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cy:run": "npx cypress run",
+    "cy:open": "npx cypress open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress-xpath": "^1.6.1"
+  },
+  "devDependencies": {
+    "cypress": "3.6.0",
+    "cypress-dark": "^1.7.14",
+    "eslint": "^7.23.0"
+  }
+}
