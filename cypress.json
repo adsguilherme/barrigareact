@@ -1,4 +1,5 @@
 {
+"baseUrl": "http://barrigarest.wcaquino.me",    
 "chromeWebSecurity": false,
 "watchForFileChanges": false,
 "theme": "dark"
