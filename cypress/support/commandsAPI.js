@@ -22,3 +22,18 @@ Cypress.Commands.add('resetRest', () => {
         }).its('status').should('be.eq', 200)
     })
 })
+
+Cypress.Commands.add('getAccountByName', name => {
+    cy.getToken().then(token => {
+        cy.request({
+            method: 'GET',
+            url: '/contas',
+            headers: { Authorization: `JWT ${token}`},
+            qs: {
+                nome: name
+            }
+        }).then(res => {
+            return res.body[0].id
+        })
+    })
+})
