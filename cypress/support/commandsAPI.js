@@ -9,6 +9,7 @@ Cypress.Commands.add('getToken', () => {
         }
     }).its('body.token').should('not.be.empty')
     .then(token => {
+        Cypress.env('token', token) // Explicando: {'token'} é o nome da variável e o {, token} é seu valor
         return token
     })
 })
@@ -37,3 +38,18 @@ Cypress.Commands.add('getAccountByName', name => {
         })
     })
 })
+
+Cypress.Commands.overwrite('request', (originalFn, ...options) => {
+    if(options.length === 1) {
+        if(Cypress.env('token')) {
+            options[0].headers = {
+                Authorization: `JWT ${Cypress.env('token')}`
+            }    
+        }
+    }
+
+    return originalFn(...options)
+
+})
+
+
