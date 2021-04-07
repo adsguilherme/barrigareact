@@ -1,1 +1,1 @@
-{"project":"<your-key-here>", "sonarURL": "<your-sonar-url>"}
+{"project":"barrigareact", "sonarURL": "http://localhost:9000/dashboard?id=barrigareact"}

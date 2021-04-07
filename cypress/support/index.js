@@ -24,5 +24,5 @@ require('cypress-xpath')
 require('cypress-dark')
 
 Cypress.on('uncaught:exception', (err, runnable) => {
-    return false
-});
+  return false
+})

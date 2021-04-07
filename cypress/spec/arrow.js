@@ -1,30 +1,29 @@
 it('nada agora', () => {
-    
-    // function soma(a, b) {
-    //     return a + b;
-    // }
+  // function soma(a, b) {
+  //     return a + b;
+  // }
 
-    // const soma = (a, b) => {
-    //     return a + b;
-    // }
+  // const soma = (a, b) => {
+  //     return a + b;
+  // }
 
-    // const soma = (a, b) => a + b;
-    
-    // const soma = (a, b) => {
-    //     return a + b;
-    // };
+  // const soma = (a, b) => a + b;
 
-    // const soma = (a) => a + a;
-    
-    const soma = () => 10 + 10;
+  // const soma = (a, b) => {
+  //     return a + b;
+  // };
 
-    console.log(soma(1,4));
-});
+  // const soma = (a) => a + a;
+
+  const soma = () => 10 + 10
+
+  console.log(soma(1, 4))
+})
 
 it('a function teste...', function () {
-    console.log('Function', this)
-});
+  console.log('Function', this)
+})
 
 it('an arrow teste...', () => {
-    console.log('Arrow', this)
-});
+  console.log('Arrow', this)
+})
