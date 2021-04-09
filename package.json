@@ -7,8 +7,7 @@
     "lint": "npx standard",
     "lint:fix": "npx standard --fix",
     "cy:run": "npx cypress run",
-    "cy:open": "npx cypress open",
-    "flow-coverage": "flow-coverage-report -i src/**/*.js -o coverage -t text -t html"
+    "cy:open": "npx cypress open"
   },
   "standard": {
     "globals": [
@@ -31,11 +30,8 @@
     "standard": "^16.0.3"
   },
   "devDependencies": {
-    "babel-preset-flow": "^6.23.0",
     "cypress": "3.6.0",
     "cypress-dark": "^1.7.14",
-    "eslint": "^7.23.0",
-    "flow-bin": "^0.148.0",
-    "flow-coverage-report": "^0.8.0"
+    "eslint": "^7.23.0"
   }
 }
