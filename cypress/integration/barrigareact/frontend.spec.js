@@ -4,7 +4,11 @@ import loc from '../../support/locators'
 import '../../support/commandsContas'
 
 describe('Deve testar o nível funcional', () => {
-  before(() => {
+  after(() => { // After executa uma vez após todos os testes
+    cy.clearLocalStorage()
+  })
+
+  before(() => { // Before executa uma vez antes de todos os testes
     cy.server()
     cy.route({
       method: 'POST',
@@ -43,13 +47,40 @@ describe('Deve testar o nível funcional', () => {
 
   beforeEach(() => {
     cy.get(loc.MENU.HOME).click() // padronizando inicialização
-    cy.resetApp() // reset após cada cenário executado
+    // cy.resetApp() // reset após cada cenário executado // Por estar usando mocks não precisa do uso do reset
   })
 
   it('Deve inserir uma conta', () => {
+    cy.route({
+      method: 'GET',
+      url: '/contas',
+      response: [
+        { id: 1, nome: 'Carteira01', visivel: true, usuario_id: 1 },
+        { id: 2, nome: 'Banco', visivel: true, usuario_id: 2 }
+      ]
+    }).as('contasGet')
+
+    cy.route({
+      method: 'POST',
+      url: '/contas',
+      response: [
+        { id: 3, nome: 'Conta de teste', visivel: true, usuario_id: 3 }
+      ]
+    }).as('contasPost')
+
     cy.acessarMenuConta()
     // cy.get(loc.MENU.SETTINGS).click()
     // cy.get(loc.MENU.CONTAS).click()
+
+    cy.route({
+      method: 'GET',
+      url: '/contas',
+      response: [
+        { id: 1, nome: 'Carteira01', visivel: true, usuario_id: 1 },
+        { id: 2, nome: 'Banco', visivel: true, usuario_id: 2 },
+        { id: 3, nome: 'Conta de teste', visivel: true, usuario_id: 3 }
+      ]
+    }).as('contasGet+')
 
     cy.inserirConta('Conta de teste')
     // cy.get(loc.CONTAS.NOME).type('Conta de teste')
@@ -58,12 +89,29 @@ describe('Deve testar o nível funcional', () => {
     cy.get(loc.MESSAGE).should('contain', 'Conta inserida com sucesso!')
   })
 
-  it('Deve alterar uma conta', () => {
+  it.only('Deve alterar uma conta', () => {
+    cy.route({
+      method: 'GET',
+      url: '/contas',
+      response: [
+        { id: 1, nome: 'Carteira01', visivel: true, usuario_id: 1 },
+        { id: 2, nome: 'Banco', visivel: true, usuario_id: 2 }
+      ]
+    }).as('contasGet')
+
+    cy.route({
+      method: 'PUT',
+      url: '/contas/**', // '/contas/1' em vez de passar /1 pode passar /** , dessa forma não deixando fixo algum valor e a aplicação faz a busca.
+      response: [
+        { id: '1', nome: 'Conta alterada', visivel: true, usuario_id: '1' }
+      ]
+    }).as('contasPut')
+
     cy.acessarMenuConta()
     // cy.get(loc.MENU.SETTINGS).click()
     // cy.get(loc.MENU.CONTAS).click()
 
-    cy.xpath(loc.CONTAS.FN_XP_BTN_ALTERAR('Conta para alterar')).click()
+    cy.xpath(loc.CONTAS.FN_XP_BTN_ALTERAR('Banco')).click()
     cy.get(loc.CONTAS.NOME)
       .clear()
       .type('Conta alterada')
