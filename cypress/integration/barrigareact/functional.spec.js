@@ -5,7 +5,7 @@ import '../../support/commandsContas'
 
 describe('Deve testar o nível funcional', () => {
   before(() => {
-    cy.login()
+    cy.login('gscode@gscode.com.br', '123')
     // cy.visit('http://barrigareact.wcaquino.me/')
     // cy.get(loc.LOGIN.USER).type('gscode@gscode.com.br')
     // cy.get(loc.LOGIN.PASSWORD).type('123')
@@ -62,7 +62,7 @@ describe('Deve testar o nível funcional', () => {
     cy.get(loc.MOVIMENTACAO.BTN_SALVAR).click()
     cy.get(loc.MESSAGE).should('contain', 'sucesso')
 
-    cy.get(loc.EXTRATO.LINHAS).should('have.length', 7) // Have.length sginifica: que tenha o tamanho x. Nesse
+    cy.get(loc.EXTRATO.LINHAS).should('have.length', 7) // Have.length sginifica: que tenha o tamanho x.
     cy.xpath(loc.EXTRATO.FN_XP_BUSCA_ELEMENTO('Desc', '123')).should('exist')
   })
 
