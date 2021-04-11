@@ -33,7 +33,8 @@ const locators = {
     LINHAS: '.list-group > li',
     FN_XP_BUSCA_ELEMENTO: (desc, value) => `//span[contains(., '${desc}')]/following-sibling::small[contains(., '${value}')]`, // Criando um elemento dinâmico
     FN_XP_REMOVER_ELEMENTO: (conta) => `//span[contains(., '${conta}')]/../../..//i[@class='far fa-trash-alt']`, // Criando um elemento dinâmico
-    FN_XP_ALTERAR_ELEMENTO: (conta) => `//span[contains(., '${conta}')]/../../..//i[@class='fas fa-edit']` // Criando um elemento dinâmico
+    FN_XP_ALTERAR_ELEMENTO: (conta) => `//span[contains(., '${conta}')]/../../..//i[@class='fas fa-edit']`, // Criando um elemento dinâmico
+    FN_XP_LINHA: desc => `//span[contains(., '${desc}')]/../../../..`
   },
 
   SALDO: {

@@ -24,6 +24,23 @@ describe('Deve testar o nível funcional', () => {
     // cy.resetApp() // reset após cada cenário executado // Por estar usando mocks não precisa do uso do reset
   })
 
+  it('Deve testar a responsividade', () => {
+    cy.get('[data-test=menu-home]').should('exist')
+      .and('be.visible')
+
+    cy.viewport(500, 700)
+    cy.get('[data-test=menu-home]').should('exist')
+      .and('be.not.visible')
+
+    cy.viewport('iphone-5')
+    cy.get('[data-test=menu-home]').should('exist')
+      .and('be.not.visible')
+
+    cy.viewport('ipad-2')
+    cy.get('[data-test=menu-home]').should('exist')
+      .and('be.visible')
+  })
+
   it('Deve criar uma conta', () => {
     cy.route({
       method: 'POST',
@@ -206,6 +223,67 @@ describe('Deve testar o nível funcional', () => {
     cy.xpath(loc.EXTRATO.FN_XP_REMOVER_ELEMENTO('Movimentacao para exclusao')).click()
     cy.get(loc.MESSAGE).should('contain', 'sucesso')
   })
+
+  it('Deve validar os dados para criar uma conta', () => {
+    const reqStub = cy.stub()
+
+    cy.route({
+      method: 'POST',
+      url: '/contas',
+      response: { id: 3, nome: 'Conta de teste', visivel: true, usuario_id: 3 },
+      // onRequest: req => {
+      //   console.log(req)
+      //   expect(req.request.body.nome).to.be.empty
+      //   expect(req.request.headers).to.have.property('Authorization')
+      // }
+      onRequest: reqStub
+    }).as('saveConta')
+
+    cy.acessarMenuConta()
+    // cy.get(loc.MENU.SETTINGS).click()
+    // cy.get(loc.MENU.CONTAS).click()
+
+    cy.route({
+      method: 'GET',
+      url: '/contas',
+      response: [
+        { id: 1, nome: 'Carteira01', visivel: true, usuario_id: 1 },
+        { id: 2, nome: 'Banco', visivel: true, usuario_id: 2 },
+        { id: 3, nome: 'Conta de teste', visivel: true, usuario_id: 3 }
+      ]
+    }).as('contasGet+')
+
+    cy.inserirConta('{CONTROL}')
+    // cy.wait('@saveConta').its('request.body.nome').should('not.be.empty')
+    cy.wait('@saveConta').then(() => {
+      console.log(reqStub.args[0][0])
+      expect(reqStub.args[0][0].request.body.nome).to.be.empty
+      expect(reqStub.args[0][0].request.headers).to.have.property('Authorization')
+    })
+    cy.get(loc.MESSAGE).should('contain', 'Conta inserida com sucesso!')
+  })
+
+  it('Deve testar as cores', () => {
+    cy.route({
+      method: 'GET',
+      url: '/extrato/**',
+      response: [
+        { conta: 'Conta para movimentacoes', id: 495727, descricao: 'Receita Paga', envolvido: 'AAA', observacao: null, tipo: 'REC', data_transacao: '2021-04-10T03:00:00.000Z', data_pagamento: '2021-04-10T03:00:00.000Z', valor: '-1500.00', status: true, conta_id: 536402, usuario_id: 13102, transferencia_id: null, parcelamento_id: null },
+        { conta: 'Conta com movimentacao', id: 495728, descricao: 'Receita Pendente', envolvido: 'BBB', observacao: null, tipo: 'REC', data_transacao: '2021-04-10T03:00:00.000Z', data_pagamento: '2021-04-10T03:00:00.000Z', valor: '-1500.00', status: false, conta_id: 536403, usuario_id: 13102, transferencia_id: null, parcelamento_id: null },
+        { conta: 'Conta para saldo', id: 495729, descricao: 'Despesa Paga', envolvido: 'CCC', observacao: null, tipo: 'DESP', data_transacao: '2021-04-10T03:00:00.000Z', data_pagamento: '2021-04-10T03:00:00.000Z', valor: '3500.00', status: true, conta_id: 536404, usuario_id: 13102, transferencia_id: null, parcelamento_id: null },
+        { conta: 'Conta para saldo', id: 495730, descricao: 'Despesa Pendente', envolvido: 'DDD', observacao: null, tipo: 'DESP', data_transacao: '2021-04-10T03:00:00.000Z', data_pagamento: '2021-04-10T03:00:00.000Z', valor: '-1000.00', status: false, conta_id: 536404, usuario_id: 13102, transferencia_id: null, parcelamento_id: null }
+      ]
+    })
+    cy.get(loc.MENU.EXTRATO).click()
+    cy.xpath(loc.EXTRATO.FN_XP_LINHA('Receita Paga')).should('have.class', 'receitaPaga') // have.class está validando se existe a classe receitaPaga.
+    cy.xpath(loc.EXTRATO.FN_XP_LINHA('Receita Pendente')).should('have.class', 'receitaPendente')
+    cy.xpath(loc.EXTRATO.FN_XP_LINHA('Despesa Paga')).should('have.class', 'despesaPaga')
+    cy.xpath(loc.EXTRATO.FN_XP_LINHA('Despesa Pendente')).should('have.class', 'despesaPendente')
+  })
 })
 
 // span que contenha 'Desc' em qualquer ponto (o uso de ., significa 'qualquer ponto') e seu irmão small contenha o valor '123'.
+
+// HACK:
+// Executando apenas uma spec através do modo headless
+// npm run cypress:run --spec cypress/integration/barrigareact/frontend.spec.js
